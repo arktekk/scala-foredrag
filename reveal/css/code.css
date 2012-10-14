@@ -1,0 +1,12 @@
+pre {
+    padding: 10px;
+}
+
+pre.prettyprint {
+    background-color: white;
+    padding: 10px;
+}
+
+.nocode {
+    color: #000000;
+}
