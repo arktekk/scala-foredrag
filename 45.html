@@ -49,15 +49,15 @@
 		</section>
 		
 		<section>
-			<h2>2012</h2>
-			<img src="old.jpg"/>
-		</section>
-
-		<section>
 			<pre style="color:white;background:black"><code>
 Why.java:3: ';' expected
     System.out.println("whyyyy ?")
 			</code></pre>
+		</section>
+		
+		<section>
+			<h2>2012</h2>
+			<img src="old.jpg"/>
 		</section>
 		
 		<section>
@@ -356,7 +356,56 @@ val (kids, adults) = people.partition(person => person.age < 18)
 		<pre class="prettyprint fragment"><code>
 val (kids, adults) = people.partition(_.age < 18)
 		</code></pre>
-		</section>		
+		</section>
+		
+		<section>
+			<h2>Null<font color="red"> ♥</font> ?</h2>
+			<pre class="prettyprint"><code>
+import java.util.HashMap
+val map = new HashMap[Int, String]
+map.put(0, null)
+...
+map.get(0) // null
+map.get(1) // null
+
+if(map.containsKey(0)){
+  return map.get(0)
+}			
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>Option = Some | None</h2>
+			<pre class="prettyprint"><code>
+val map = Map(0 -> "Hello", 1 -> "World")
+map.get(0) // Some("Hello")
+map.get(2) // None
+
+map(0) // "Hello"
+map(2) // java.util.NoSuchElementException			
+			</code></pre>
+		</section>
+		
+		<section>
+			
+			<pre class="prettyprint"><code>
+val both = for {
+  a <- map.get(0)
+  b <- map.get(1)
+} yield a + ":" + b
+
+// both == Some("Hello:World")
+			</code></pre>
+			
+			<pre class="prettyprint fragment"><code>
+val both = for {
+  a <- map.get(0)
+  b <- map.get(2)
+} yield a + ":" + b
+
+// both == None
+			</code></pre>
+		</section>
 		
 		<section>
 			<h2> pattern matching &amp; case classes</h2>
