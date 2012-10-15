@@ -42,10 +42,6 @@
 			<h3><a href="http://arktekk.no">Arktekk</a></h3>
 			<h3><a href="http://twitter.com/jteigen">@jteigen</a></h3>
         </section>
-
-		<section>
-			<h2><font color="red"> ♥</font> KODE <font color="red"> ♥</font></h2>
-		</section>
 		
 		<section>
 			<h2>1995</h2>
@@ -231,38 +227,42 @@ Calc.mult(4, Calc.add(1, 2))
 			<h2>stackable modifications</h2>
 			<pre class="prettyprint"><code>
 trait Rule {
-  def convert(int:Int) = int.toString
+  def convert(i:Int) = i.toString
 }
 
 trait Fizz extends Rule {
-  override def convert(int:Int) =
-    if(int % 3 == 0) "Fizz" else super.convert(int)
+  override def convert(i:Int) =
+    if(i % 3 == 0) "Fizz" else super.convert(i)
 }
 
 trait Buzz extends Rule {
-  override def convert(int:Int) =
-    if(int % 5 == 0) "Buzz" else super.convert(int)
+  override def convert(i:Int) =
+    if(i % 5 == 0) "Buzz" else super.convert(i)
 }
 
 trait FizzBuzz extends Rule {
-  override def convert(int:Int) =
-    if(int % 3 == 0 && int % 5 == 0) "FizzBuzz"
-    else super.convert(int)
+  override def convert(i:Int) =
+    if(i % 3 == 0 && i % 5 == 0) "FizzBuzz"
+    else super.convert(i)
 }			
 			</code></pre>
 		</section>
 		
 		<section>
 			<pre class="prettyprint"><code>
+// 1				
 object FizzTest extends Rule with Fizz
 (0 to 15).foreach(i => println(FizzTest.convert(i)))
 
+// 2
 object BuzzTest extends Rule with Buzz
 (0 to 15).foreach(i => println(BuzzTest.convert(i)))
 
+// 3
 object FizzBuzzTest extends Rule with Fizz with Buzz with FizzBuzz
 (0 to 15).foreach(i => println(FizzBuzzTest.convert(i)))
 
+// 4
 object BuzzFizzTest extends Rule with FizzBuzz with Fizz with Buzz
 (0 to 15).foreach(i => println(BuzzFizzTest.convert(i)))			
 			</code></pre>
@@ -294,7 +294,9 @@ for(person <- people){
 }
 			</code></pre>
 			<pre class="prettyprint fragment"><code>
-val ages = people.map(_.age)
+val ages = people.map(person => person.age)
+
+// List(10, 12, 42, 43)
 			</code></pre>
 		</section>
 		
@@ -308,14 +310,17 @@ for(person <- people){
 }			
 			</code></pre>
 			<pre class="prettyprint fragment"><code>
-val kids = people.filter(_.age < 18)			
+val kids = people.filter(person => person.age < 18)
+
+// List(Person("kid-a", 10), Person("kid-b", 12))
 			</code></pre>
 		</section>
 		
 		<section>
 			<pre class="prettyprint"><code>
 case class Owner(pets:List[String])
-val owners = List(...)
+val owners = List(Owner(List("Dog", "Cat")), 
+                  Owner(List("Fish")))
 
 var pets = new ListBuffer[String]
 
@@ -325,7 +330,9 @@ for(owner <- owners){
 			</code></pre>
 			
 			<pre class="prettyprint fragment"><code>
-val pets = owners.flatMap(_.pets)			
+val pets = owners.flatMap(owner => owner.pets)
+
+// List("Dog", "Cat", "Fish")
 			</code></pre>
 		</section>
 		
@@ -343,9 +350,13 @@ for(person <- people){
 		</code></pre>
 		
 		<pre class="prettyprint fragment"><code>
-val (kids, adults) = people.partition(_.age < 18)		
+val (kids, adults) = people.partition(person => person.age < 18)
 		</code></pre>
-		</section>
+		
+		<pre class="prettyprint fragment"><code>
+val (kids, adults) = people.partition(_.age < 18)
+		</code></pre>
+		</section>		
 		
 		<section>
 			<h2> pattern matching &amp; case classes</h2>
@@ -364,6 +375,24 @@ val tree = Branch(
     Branch(Leaf(3), Leaf(4)))
 
 sum(tree)			
+			</code></pre>
+		</section>
+		
+		<section>
+			<pre class="prettyprint"><code>
+val Email = """(.+)@(.+)\.(.+)""".r
+
+"jon-anders.teigen@arktekk.no" match {
+
+  case Email(name, domain, tld) => 
+    Map("name" -> name, "domain" -> domain, "tld" -> tld)
+
+  case email => 
+    Map("error" -> ("cannot decompose email " + email))
+}
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+val Email(name, domain, tld) = "jon-anders.teigen@arktekk.no"
 			</code></pre>
 		</section>
 		
@@ -388,6 +417,15 @@ class Demo extends Plan {
 				<li>IntelliJ, Eclipse, Emacs, Sublime ...</li>
 				<li>SBT, Maven, Ant, Gradle ...</li>
 			</ul>
+		</section>
+		
+		<section>
+			<h1>Community</h1>
+			<ul>
+			<li>ScalaBin</li>
+			<li>Oslo Socially Functional</li>
+			<li>flatMap Oslo (konferanse)
+		    </ul>
 		</section>		
 		
 		<section>
