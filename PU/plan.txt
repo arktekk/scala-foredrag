@@ -1,0 +1,86 @@
+call-by-name
+lazy
+functions
+stm
+
+
+intro
+
+history?
+* Martin Odersky
+* 1995 - researched functional extensions to Java with Philip Wadler
+** Pizza, GJ, Generics, Javac - Java is too hard to extend
+* 2001 @EPFL -> Started Scala
+* 2003 -> Released Scala
+
+
+* semicolon inference
+* type inference
+* expression oriented
+* everything can be nested
+* first class immutability/values
+* functions (and a std-api that uses them)
+* lets "switch" on everything (and more)
+* fix multiple inheritance
+* remove a bunch of restrictions
+* improve the typesystem
+* fix arrays
+* concurrency that doesn't suck
+* repl / scriptable
+* getters/setters
+
+lets make it REALLY awesome
+* lazyness (values, parameters) - haskell
+* typeclasses - haskell
+* polymorphic modules (namespaces) - ml
+* ADT / pattern matching - ml,haskell
+* Actors - erlang
+* Macros - lisp
+
+OMG KITCHENSINK ALERT!!! (ok, not really)
+- clearly, adding this to java would be stupid
+
+object oriented - all values are objects (no primitives)
+functional - functions are values
+
+objects != imperative mutability
+
+records - case classes
+objects - modules (unify objects and packages)
+
+Simula -> Now; should we ignore all of it ?
+Lambda Calculus -> Now; should we ignore all of it ?
+ole brum
+
+collections
+
+traits / objects
+
+functions
+* syntax
+
+polymorphism
+* sub-type (inheritance)
+* parametric (generics)
+* ad-hoc (type-classes)
+
+collections - 
+	return the most specific type (aka prolog in the typesystem)
+	why traits are awesome
+
+case classes
+
+pattern matching
+
+extractors
+
+implicit conversions
+
+value classes
+
+implicit value classes
+
+macros - https://github.com/jonifreeman/sqltyped
+
+string interpolation - 
+

@@ -62,6 +62,55 @@ Why.java:3: ';' expected
 		
 		<section>
 			<img src="scala.png" width="100%"/>
+			<ul>
+				<li>Martin Odersky</li>
+				<li>1995 - Researched making Java functional</li>
+				<li>2001 - Started Scala @ EPFL</li>
+				<li>2003 - Released Scala</li>
+				<li>2012 - Well adopted</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Functional programming - 30s</h2>
+			<ul>
+				<li>Lambda Calculus, Lisp, ML, Haskell..</li>
+				<li>Great for algorithms</li>
+				<li>Compose Functions</li>
+			</ul>			
+		</section>
+		
+		<section>
+			<h2>Object orientation - 60s</h2>
+			<ul>
+				<li>Simula, Smalltalk, C++, Java, Javascript, Ruby, Groovy.. Erlang?</li>
+				<li>Great for certain models like GUI</li>
+				<li>Inheritance, Message passing</li>
+				<li>Gigantic Markedshare!</li>
+			</ul>
+		</section>
+		
+		<section>
+			<h2>Object oriented *OR* Functional ?</h2>
+		</section>
+		
+		<section>
+			<h2>Object oriented *AND* Functional ?</h2>
+			<img src="../PU/Winniethepooh.png">
+		</section>		
+	
+		<section>
+			<h2>Features ?</h2>
+			<img src="../PU/sink.jpg">
+		</section>
+		
+		<section>
+			<h2>Features!</h2>
+			<img src="../PU/dna.png">
+		</section>
+		
+		<section>
+			<img src="../PU/bob.jpg">
 		</section>
 		
 		<section>
@@ -99,6 +148,28 @@ def foo(a:Int):Int = {
 		</section>
 		
 		<section>
+			<h2>Nesting</h2>
+			<pre class="prettyprint"><code>
+val init = {
+  def plus(a:Int, b:Int) = a + b
+  val x = 5
+  plus(x, 1)
+}
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>Lazy</h2>
+			<pre class="prettyprint"><code>
+lazy val init = {
+  def fromDB(a:Int, b:Int) = ...
+  val x = 5
+  plus(x, 1)
+}
+			</code></pre>
+		</section>
+		
+		<section>
 			<h2>Equality</h2>
 			<pre class="prettyprint"><code>
 val a = new String("Hello")
@@ -128,6 +199,26 @@ a &lt;= b
 "foo".charAt(0)
 
 "foo" charAt 0			
+			</code></pre>
+		</section>
+		
+		<section>
+			<pre class="prettyprint"><code>
+import scala.util.parsing.combinator._
+
+class JSON extends JavaTokenParsers {   
+
+  def value : Parser[Any] = obj | arr | 
+                            stringLiteral | 
+                            floatingPointNumber | 
+                            "null" | "true" | "false"
+
+  def obj = "{"~repsep(member, ",")~"}"
+
+  def arr = "["~repsep(value, ",")~"]"
+
+  def member = stringLiteral~":"~value
+}			
 			</code></pre>
 		</section>
 		
@@ -207,6 +298,16 @@ person.age // 29
 		</section>
 		
 		<section>
+			<h2>Case classes</h2>
+			<pre class="prettyprint"><code>
+case class Person(name:String, age:Int)
+
+val person = Person("Me", 31)
+val updated = person.copy(age = person.age + 1)
+			</code></pre>
+		</section>
+		
+		<section>
 			<h2>traits</h2>
 			<pre class="prettyprint"><code>
 trait Mult {
@@ -270,6 +371,29 @@ object BuzzFizzTest extends Rule with FizzBuzz with Fizz with Buzz
 		
 		<section>
 			<img src="traits.png"/>
+		</section>		
+		
+		<section>
+			<h2>Functions</h2>
+			<pre class="prettyprint"><code>
+def adder(f:Int => Int) = f(5)
+
+val plus1 = (i:Int) = i + 1
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+adder(plus1) // 6
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+adder(i => i + 1) // 6
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+adder(_ + 1) // 6
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+def plus1(i:Int) = i + 1
+
+adder(plus1)			
+			</code></pre>
 		</section>
 		
 		<section>
@@ -359,6 +483,20 @@ val (kids, adults) = people.partition(_.age < 18)
 		</section>
 		
 		<section>
+			<h2>Collections are functions</h2>
+			<pre class="prettyprint"><code>
+val list = List(1,2,3)
+list(0) // of its indexes
+
+val map = Map("A" -> 1, "B" -> 2)
+map("A") // of its keys
+
+val set = Set(1,2,3)
+set(1) // true
+			</code></pre>
+		</section>		
+		
+		<section>
 			<h2>Null<font color="red"> ♥</font> ?</h2>
 			<pre class="prettyprint"><code>
 import java.util.HashMap
@@ -415,7 +553,7 @@ case class Branch(left:Tree, right:Tree) extends Tree
 case class Leaf(value:Int) extends Tree
 
 def sum(tree:Tree):Int = tree match {
-  case Branch(leaf, right) => sum(left) + sum(right)
+  case Branch(left, right) => sum(left) + sum(right)
   case Leaf(value)         => value
 }
 
@@ -446,6 +584,22 @@ val Email(name, domain, tld) = "jon-anders.teigen@arktekk.no"
 		</section>
 		
 		<section>
+			<h2>Actors</h2>
+			<pre class="prettyprint"><code>
+class MyActor extends Actor {
+  def receive = {
+    case "hello" => 
+      // do stuff
+    case "world" =>
+      // do other stuff
+  }
+}
+
+myActor ! "hello"
+			</code></pre>
+		</section>
+		
+		<section>
 			<h2>Unfiltered</h2>
 			<pre class="prettyprint"><code>
 class Demo extends Plan {				
@@ -456,26 +610,63 @@ class Demo extends Plan {
     case GET(Path(Seg("product", id))) =>
       Ok ~> ResponseString("Product #" + id)
   }
-}			
+}
 			</code></pre>
-		</section>
-				
-		<section>
-			<h2>Tooling</h2>
-			<ul>
-				<li>IntelliJ, Eclipse, Emacs, Sublime ...</li>
-				<li>SBT, Maven, Ant, Gradle ...</li>
-			</ul>
 		</section>
 		
 		<section>
-			<h1>Community</h1>
-			<ul>
-			<li>ScalaBin</li>
-			<li>Oslo Socially Functional</li>
-			<li>flatMap Oslo (konferanse)
-		    </ul>
-		</section>		
+			<h2>Type classes (ad-hoc polymorphism)</h2>
+			<pre class="prettyprint"><code>
+trait Add[A] {
+  def zero:A
+  def add(a1:A, a2:A):A 
+}
+
+def total[A](as:List[A])(implicit a:Add[A]) = 
+  as.foldLeft(a.zero)(a.add)
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+implicit object addInt extends Add[Int]{
+  def zero = 0
+  def add(a1:Int, a2:Int) = a1 + a2 
+}				
+total(List(1,2,3)) // 6
+total(List[Int]()) // 0
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+implicit def addList[A] = new Add[List[A]]{
+  def zero = Nil
+  def add(a1:List[A], a2:List[A]) = a1 ::: a2 
+}
+total(List(List("hello"), List("world")))
+// List(hello, world)
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>implicit conversions</h2>
+			<pre class="prettyprint"><code>
+implicit class Total[A](val as:List[A]) extends AnyVal { 
+  def total(implicit a:Add[A]) = as.foldLeft(a.zero)(a.add) 
+}
+
+List(1,2,3).total // 6
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>STM</h2>
+			<pre class="prettyprint"><code>
+import scala.concurrent.stm._
+
+val x = Ref(0)
+
+atomic{ implicit tx =>
+  val i = x() // read
+  x() = i + 1 // write	
+}			
+			</code></pre>
+		</section>
 		
 		<section>
 			<h1>?</h1>
