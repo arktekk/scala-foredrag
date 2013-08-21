@@ -67,7 +67,7 @@ Why.java:3: ';' expected
 				<li>1995 - Researched making Java functional</li>
 				<li>2001 - Started Scala @ EPFL</li>
 				<li>2003 - Released Scala</li>
-				<li>2012 - Well adopted</li>
+				<li>2013 - Well adopted</li>
 			</ul>
 		</section>
 		
@@ -83,7 +83,7 @@ Why.java:3: ';' expected
 		<section>
 			<h2>Object orientation - 60s</h2>
 			<ul>
-				<li>Simula, Smalltalk, C++, Java, Javascript, Ruby, Groovy.. Erlang?</li>
+				<li>Simula, Smalltalk, C++, Java, Javascript, Ruby, Groovy</li>
 				<li>Great for certain models like GUI</li>
 				<li>Inheritance, Message passing</li>
 				<li>Gigantic Markedshare!</li>
@@ -134,6 +134,10 @@ val x = "Hello"
 val x:String = "Hello"	
 	</code></pre>
 		</section>
+		
+		<section>
+			<img src="var_val.jpg"/>
+		</section>
 				
 		<section>
 			<h2>Metoder</h2>
@@ -148,7 +152,7 @@ def foo(a:Int):Int = {
 		</section>
 		
 		<section>
-			<h2>Nesting</h2>
+			<h2>Nøsting</h2>
 			<pre class="prettyprint"><code>
 val init = {
   def plus(a:Int, b:Int) = a + b
@@ -161,11 +165,12 @@ val init = {
 		<section>
 			<h2>Lazy</h2>
 			<pre class="prettyprint"><code>
-lazy val init = {
-  def fromDB(a:Int, b:Int) = ...
-  val x = 5
-  plus(x, 1)
-}
+lazy val data = fromDb(1)
+
+if(x > 10)
+  data.doStuff()
+else
+  ...
 			</code></pre>
 		</section>
 		
@@ -177,6 +182,16 @@ val b = new String("Hello")
 
 a == b // true (java equals)
 a eq b // false (java ==)			
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>String interpolation</h2>
+			<pre class="prettyprint"><code>
+val javabin = "Stavanger"
+
+s"Hei $javabin"
+// Hei Stavanger
 			</code></pre>
 		</section>
 		
@@ -390,15 +405,25 @@ adder(i => i + 1) // 6
 adder(_ + 1) // 6
 			</code></pre>
 			<pre class="prettyprint fragment"><code>
-def plus1(i:Int) = i + 1
+def plus2(i:Int) = i + 2
 
-adder(plus1)			
+adder(plus2)
 			</code></pre>
 		</section>
 		
 		<section>
 			<h1>Collections</h1>
 			<img src="collections.png"/>
+		</section>
+		
+		<section>
+			<h1>Mutable</h1>
+			<img src="mutable.png"/>
+		</section>
+		
+		<section>
+			<h1>Immutable</h1>
+			<img src="immutable.png"/>
 		</section>
 		
 		<section>
@@ -410,7 +435,8 @@ val people = List(Person("kid-a", 10),
                   Person("kid-b", 12), 
                   Person("mom", 42), 
                   Person("dad", 43))
-
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
 var ages = new ListBuffer[Int]
 
 for(person <- people){
@@ -584,22 +610,6 @@ val Email(name, domain, tld) = "jon-anders.teigen@arktekk.no"
 		</section>
 		
 		<section>
-			<h2>Actors</h2>
-			<pre class="prettyprint"><code>
-class MyActor extends Actor {
-  def receive = {
-    case "hello" => 
-      // do stuff
-    case "world" =>
-      // do other stuff
-  }
-}
-
-myActor ! "hello"
-			</code></pre>
-		</section>
-		
-		<section>
 			<h2>Unfiltered</h2>
 			<pre class="prettyprint"><code>
 class Demo extends Plan {				
@@ -615,42 +625,42 @@ class Demo extends Plan {
 		</section>
 		
 		<section>
-			<h2>Type classes (ad-hoc polymorphism)</h2>
+			<h2>Actors</h2>
 			<pre class="prettyprint"><code>
-trait Add[A] {
-  def zero:A
-  def add(a1:A, a2:A):A 
+class MyActor extends Actor {
+  def receive = {
+    case "hello" => 
+      // do stuff
+    case Message(msg) =>
+      // do other stuff
+  }
 }
 
-def total[A](as:List[A])(implicit a:Add[A]) = 
-  as.foldLeft(a.zero)(a.add)
-			</code></pre>
-			<pre class="prettyprint fragment"><code>
-implicit object addInt extends Add[Int]{
-  def zero = 0
-  def add(a1:Int, a2:Int) = a1 + a2 
-}				
-total(List(1,2,3)) // 6
-total(List[Int]()) // 0
-			</code></pre>
-			<pre class="prettyprint fragment"><code>
-implicit def addList[A] = new Add[List[A]]{
-  def zero = Nil
-  def add(a1:List[A], a2:List[A]) = a1 ::: a2 
-}
-total(List(List("hello"), List("world")))
-// List(hello, world)
+myActor ! "hello"
 			</code></pre>
 		</section>
 		
 		<section>
-			<h2>implicit conversions</h2>
+			<h2>Futures</h2>
 			<pre class="prettyprint"><code>
-implicit class Total[A](val as:List[A]) extends AnyVal { 
-  def total(implicit a:Add[A]) = as.foldLeft(a.zero)(a.add) 
-}
+def operation(name:String):Future[Int] = future{ ... }
 
-List(1,2,3).total // 6
+val op1 = operation("1")
+val op2 = operation("2")
+
+val combined:Future[Int] = for {
+  a <- op1
+  b <- op2
+} yield a + b
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>Parallel Collections</h2>
+			<pre class="prettyprint"><code>
+def someHeavyOperation(i:Int) = ...	
+			
+(1 to 100).par.map(someHeavyOperation)	
 			</code></pre>
 		</section>
 		
@@ -666,10 +676,110 @@ atomic{ implicit tx =>
   x() = i + 1 // write	
 }			
 			</code></pre>
+		</section>		
+		
+		<section>
+			<img src="alice.jpg"/>
+		</section>
+		
+		<section>
+			<h2>Type classes (implicit parameters)</h2>
+			<pre class="prettyprint"><code>
+trait Monoid[A] {
+  def zero:A
+  def add(a1:A, a2:A):A 
+}
+
+def total[A](as:List[A])(implicit m:Monoid[A]) = 
+  as.foldLeft(m.zero)(m.add)
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+implicit object intMonoid extends Monoid[Int]{
+  def zero = 0
+  def add(a1:Int, a2:Int) = a1 + a2 
+}				
+total(List(1,2,3)) // 6
+total(List[Int]()) // 0
+			</code></pre>
+			<pre class="prettyprint fragment"><code>
+implicit def listMonoid[A] = new Monoid[List[A]]{
+  def zero = Nil
+  def add(a1:List[A], a2:List[A]) = a1 ::: a2 
+}
+total(List(List("hello"), List("world")))
+// List(hello, world)
+			</code></pre>
+		</section>
+		
+		<section>
+			<h2>implicit conversions</h2>
+			<pre class="prettyprint"><code>
+implicit class Total[A](val as:List[A]) extends AnyVal { 
+  def total(implicit m:Monoid[A]) = as.foldLeft(m.zero)(m.add) 
+}
+
+List(1,2,3).total // 6
+			</code></pre>
+		</section>	
+		
+		<section>
+			<h2>Typelevel Programming</h2>
+			<pre class="prettyprint">
+<code>sealed trait Nat
+sealed trait Succ[N <: Nat] extends Nat
+sealed trait _0 extends Nat
+type _1 = Succ[_0]
+type _2 = Succ[_1]</code></pre>
+			
+			<pre class="prettyprint fragment">
+<code>object Builder extends Builder[_0, _0](Nil, Nil)
+
+class Builder[I <: Nat, S <: Nat] 
+    private(ints:List[Int], strings:List[String]){
+  def add(i:Int)    = new Builder[Succ[I], S](i :: ints, strings)
+  def add(s:String) = new Builder[I, Succ[S]](ints, s :: strings)
+  def build(implicit ev:BuildRule[I, S]) = (ints, strings)
+}
+
+trait BuildRule[I <: Nat, S <: Nat]</code></pre>
+			<pre class="prettyprint fragment">
+<code>implicit object rule2int1string extends BuildRule[_2, _1]
+implicit object rule1int2string extends BuildRule[_1, _2]
+
+Builder.add(1).add("a").add(2).build
+Builder.add("a").add("b").add(1).build
+Builder.add(1).add("2").build // compile error</code></pre>			
+		</section>
+		
+		<section>
+			<h2>HList</h2>
+			<pre class="prettyprint"><code>
+sealed trait HList
+case class HCons[H, T <: HList](head:H, tail:T) extends HList {
+  def :: [V](v:V) = HCons(v, this)
+}
+object HNil extends HList {
+  def :: [V](v:V) = HCons(v, this)
+}
+</code></pre>
+<pre class="prettyprint"><code>	
+val list = 1 :: "a" :: false :: HNil
+
+val int:Int = list.head
+val string:String = list.tail.head
+val b:Boolean = list.tail.tail.head			
+			</code></pre>
 		</section>
 		
 		<section>
 			<h1>?</h1>
+		</section>
+		
+		<section>
+			<h2>Pics</h2>
+			<ul>
+				<li>https://twitter.com/SethTisue/status/370143579424817152/photo/1</li>
+			</ul>
 		</section>
     </div>
 

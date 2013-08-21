@@ -255,12 +255,6 @@ req match {
 a better failure
 ----------------
 ```scala
-sealed trait Option[+A]
-case class Some[A](value:A) extends Option[A]
-object None extends Option[Nothing]
-```
-
-```scala
 sealed trait Result[+A]{
   def map[B](f:A => B):Result[B]
   def flatMap[B](f:A => Result[B]):Result[B]
@@ -426,13 +420,13 @@ commitment!
 -----------
 ```scala
 val a = for {
-	_ <- GET
-	_ <- commit
-	_ <- failure(BadRequest)
+  _ <- GET
+  _ <- commit
+  _ <- failure(BadRequest)
 } yield Ok ~> ResponseString("a")
 
 val b = for {
-	_ <- POST
+  _ <- POST
 } yield Ok ~> ResponseString("b")
 ```
 ```
@@ -476,34 +470,17 @@ curl -XGET http://...
 
 ---
 
-reaching into the underlying
-----------------------------
-```scala
-abstract class HttpRequest[+T](val underlying: T){ ... }
-abstract class HttpResponse[+T](val underlying: T){ ... }
-```
-```scala
-case class SetBufferSize(size:Int) extends Responder[HttpServletResponse]{
-  def respond(res: HttpResponse[HttpServletResponse]) {
-    res.underlying.setBufferSize(size)
-  }
-}
-
-def x:Directive[HttpServletRequest, HttpServletResponse, String] = 
-  for {
-    _ <- GET.fail ~> SetBufferSize(512)
-    r <- request[HttpServletRequest]
-  } yield r.underlying.getSession(true).getId
-```
-
----
-
 The future
 ----------
 * directives for Async Plans
 * directives for all/more of the unfiltered extractors
 * Eq/Lt/Gt instances for unfiltered extractors
 * richer directives providing correct content negotiation etc.
+
+---
+
+Thank you
+---------
 
 ---
 
