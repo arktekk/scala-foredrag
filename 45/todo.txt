@@ -1,0 +1,47 @@
+//macros
+
+import annotation.implicitNotFound
+
+sealed trait Nat
+sealed trait _0 extends Nat
+sealed trait Succ[N <: Nat] extends Nat
+
+type _1 = Succ[_0]
+type _2 = Succ[_1]
+type _3 = Succ[_2]
+type _4 = Succ[_3]
+
+class Builder[I <: Nat, S <: Nat] private(ints:List[Int], strings:List[String]){
+	def add(i:Int)    = new Builder[Succ[I], S](i :: ints, strings)
+	def add(s:String) = new Builder[I, Succ[S]](ints, s :: strings)
+	
+	def build(implicit evidence:BuildRule[I, S]) = (ints, strings)
+}
+
+object Builder extends Builder[_0, _0](Nil, Nil)
+
+trait BuildRule[I <: Nat, S <: Nat]
+
+implicit object rule2int1string extends BuildRule[_2, _1]
+implicit object rule1int2string extends BuildRule[_1, _2]
+
+Builder.add(1).add("a").add(2).build
+Builder.add("a").add("b").add(1).build
+Builder.add(1).add("2").build // compile error
+
+
+
+// HLIST
+
+sealed trait HList
+case class HCons[H, T <: HList](head:H, tail:T) extends HList {
+  def :: [V](v:V) = HCons(v, this)
+}
+object HNil extends HList {
+  def :: [V](v:V) = HCons(v, this)
+}
+
+val list = 1 :: "a" :: false :: HNil
+val int:Int = list.head
+val string:String = list.tail.head
+val b:Boolean = list.tail.tail.head

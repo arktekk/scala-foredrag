@@ -13,6 +13,11 @@
 			.reveal pre {
 				width: 100%;
 			}
+			
+			.reveal pre code {
+				max-height: 500px;
+			}
+			
 		</style>
 	</head>
 	<body>
@@ -34,6 +39,8 @@
 				center: true,
 				
 				margin: 0,
+				
+				// height: 1024,
 
 				theme: Reveal.getQueryHash().theme,
 				transition: Reveal.getQueryHash().transition || 'none',
