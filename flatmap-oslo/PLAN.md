@@ -75,10 +75,10 @@ server side browser frameworks
 
 I want
 ==============
-* http <font color="green">✓</font>
-* simplicity <font color="green">✓</font>
-* control <font color="green">✓</font>
-* composition <font color="yellow">✓</font>
+* http
+* simplicity
+* control
+* composition
 
 ---
 
@@ -92,10 +92,10 @@ without impeding direct access to their native interfaces.
 
 Unfiltered
 ==============
-* http
-* simplicity
-* control
-* composition
+* http <font color="green">✓</font>
+* simplicity <font color="green">✓</font>
+* control <font color="green">✓</font>
+* composition <font color="yellow">✓</font>
 
 ---
 
