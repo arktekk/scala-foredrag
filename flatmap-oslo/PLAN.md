@@ -128,7 +128,7 @@ def intent = {
 
 ```
 (200) curl http://localhost:8080/example
-nice
+nice..
 ```
 
 ---
@@ -259,8 +259,8 @@ Correct Behaviour
 -------------
 ```scala
 def intent = {
-  case req @ Path("/a") => ..
-  case req @ Path("/b") => ..
+  case req @ Path("/a") => req match { .. }
+  case req @ Path("/b") => req match { .. }
 }
 ```
 
@@ -277,8 +277,8 @@ def PathIntent(pf:PartialFunction[String, Request => Response])
 }
 
 def intent = PathIntent {
-  case "/a" => req => 
-  case "/b" => req =>
+  case "/a" => req => ..
+  case "/b" => req => ..
 }
 ```
 
@@ -377,6 +377,8 @@ case class Directive[A](run:Request => Result[A])
 Reuse Unfiltered
 ----------------
 ```scala
+def request = Directive(r => Success(r))
+
 implicit def method(M:Method) = Directive {
   case M(_) => Success(())
   case _    => Failure(MethodNotAllowed)
@@ -418,8 +420,31 @@ def intent = Intent.Path {
     _   <- POST
     _   <- RequestContentType === "application/json"
     _   <- Accepts.Json
-    req <- request[Any]
+    req <- request
   } yield Ok ~> JsonContent ~> ResponseBytes(Body bytes req)
+}
+```
+
+---
+
+Build your own
+--------------
+```scala
+def bytes = request.map(r => Body bytes r)
+
+def jsonIO = for {
+  _ <- RequestContentType === "application/json"
+  _ <- Accepts.Json
+  b <- bytes
+} yield b
+```
+
+```scala
+def intent = Intent.Path {
+  case "/example" => for {
+    _   <- POST
+    b   <- jsonIO
+  } yield Ok ~> JsonContent ~> ResponseBytes(b)
 }
 ```
 
@@ -467,7 +492,7 @@ def handle(adType: String) = for {
   r <- request[HttpServletRequest]
   s <- tryOrElse(doSearch(c, r), InternalServerError)
 } yield {
-  val orgHierarchy = OrganizationHierarchy.toOrgHierarchy(r, organisationService)
+  val orgHierarchy = OrganizationHierarchy.toOrgHierarchy(r, orgService)
   val resourceOwnersHeader = orgHierarchy.flatMap { o =>
     OrganizationHierarchy.toResourceOwnersHeader(o)   }
   CacheControlBuilder(MaxAge(HttpCacheConfiguration.search)) ~>
@@ -643,7 +668,8 @@ implicit val intV = data.as.String ~> data.as.Int.fail((k,v) =>
 
 implicit def required[T] = data.Requiring[T].fail(name => 
   BadParam(name + " is missing"))
-
+```
+```scala
 for {
   (opt & req) <- 
     (data.as.Option[Int] named "opt") &
